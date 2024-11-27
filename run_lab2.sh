@@ -81,34 +81,47 @@ echo -e "\n${BGreen}== Spin up the Containers ==${Color_Off}\n"
 
 docker-compose up -d
 # Copy setup scripts to the emulators
-docker cp ./setup_hv1.sh ${PREFIX}-hv1-1:/
-docker cp ./setup_hv2.sh ${PREFIX}-hv2-1:/
+docker cp ./setup2_hv1.sh ${PREFIX}-hv1-1:/
+docker cp ./setup2_hv2.sh ${PREFIX}-hv2-1:/
 # Execute the setup script on the emulators
 
 echo -e "\n${BGreen}== Test & Turn up ==${Color_Off}\n"
 
-docker exec ${PREFIX}-hv1-1 /setup_hv1.sh
-docker exec ${PREFIX}-hv2-1 /setup_hv2.sh
+docker exec ${PREFIX}-hv1-1 /setup2_hv1.sh
+docker exec ${PREFIX}-hv2-1 /setup2_hv2.sh
 # Start capturing packets on overlay and underlay network
 
-docker exec -d ${PREFIX}-hv1-1 /bin/bash -c "tcpdump -i vm1 -w vm1_overlay.pcap"
-docker exec -d ${PREFIX}-hv2-1 /bin/bash -c "tcpdump -i vm2 -w vm2_overlay.pcap"
+docker exec -d ${PREFIX}-hv1-1 /bin/bash -c "tcpdump -i vm1a -w vm1_overlay.pcap"
+docker exec -d ${PREFIX}-hv1-1 /bin/bash -c "tcpdump -i vm1b -w vm1_overlay2.pcap"
+docker exec -d ${PREFIX}-hv2-1 /bin/bash -c "tcpdump -i vm2a -w vm2_overlay.pcap"
+docker exec -d ${PREFIX}-hv2-1 /bin/bash -c "tcpdump -i vm2b -w vm2_overlay2.pcap"
 docker exec -d ${PREFIX}-hv1-1 /bin/bash -c "tcpdump -i eth0 -w vm1_underlay.pcap"
 docker exec -d ${PREFIX}-hv2-1 /bin/bash -c "tcpdump -i eth0 -w vm2_underlay.pcap"
 # Ping from VM1 to VM2
-docker exec ${PREFIX}-hv1-1 /bin/bash -c "ping -I vm1 -c 1 192.168.1.2"
-# Wait for the packets to be captured
+echo -e "\n${IBlue}--- Performing PING tests for VXLAN ID 5000"
+docker exec ${PREFIX}-hv1-1 /bin/bash -c "ping -I vm1a -c 1 192.168.1.2"
 sleep 1
+echo -e "\n${IPurple}--- Performing PING tests for VXLAN ID 5001"
+docker exec ${PREFIX}-hv1-1 /bin/bash -c "ping -I vm1b -c 1 192.168.2.2"
+sleep 1
+echo -e "\n${IYellow}--- Performing PING tests for VXLAN ID 1001"
+docker exec ${PREFIX}-hv1-1 /bin/bash -c "ping -I vm1c -c 1 192.168.3.2"
+# Wait for the packets to be captured
+sleep 2
+echo -e "\n${Color_Off}done...\n"
 # Kill the tcpdump process
 docker exec ${PREFIX}-hv1-1 /bin/bash -c "pkill tcpdump"
 docker exec ${PREFIX}-hv2-1 /bin/bash -c "pkill tcpdump"
 # Collect *.pcap files
 docker cp ${PREFIX}-hv1-1:/vm1_overlay.pcap .
+docker cp ${PREFIX}-hv1-1:/vm1_overlay2.pcap .
 docker cp ${PREFIX}-hv2-1:/vm2_overlay.pcap .
+docker cp ${PREFIX}-hv2-1:/vm2_overlay2.pcap .
 docker cp ${PREFIX}-hv1-1:/vm1_underlay.pcap .
 docker cp ${PREFIX}-hv2-1:/vm2_underlay.pcap .
 # Clean up
 sleep 10
+read -n 1 -p "Press enter to proceed w/ LAB shutdown..."
 
 echo -e "\n${BRed}== Shutdown and remove the Containers. BYE ==${Color_Off}\n"
 

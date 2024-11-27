@@ -4,6 +4,7 @@ services:
         image: hechaol/ovs-vtep-emulator:2.9.0
         # Keep the container running afte start
         entrypoint: ["/bin/bash", "-c", "/start_ovs.sh && tail -f /dev/null"]
+        # command: ["/bin/bash -c /setup_hv1.sh"]
         privileged: true
         networks:
             underlay:
@@ -12,6 +13,7 @@ services:
         image: hechaol/ovs-vtep-emulator:2.9.0
         # Keep the container running afte start
         entrypoint: ["/bin/bash", "-c", "/start_ovs.sh && tail -f /dev/null"]
+        # command: ["/bin/bash -c /setup_hv2.sh"]
         privileged: true
         networks:
             underlay:

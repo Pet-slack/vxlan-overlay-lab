@@ -1,50 +1,50 @@
 brsao0157# docker-compose up -d
-Creating vxlanlab_hv2_1 ...
-Creating vxlanlab_hv1_1 ...
-Creating vxlanlab_hv2_1
-Creating vxlanlab_hv1_1 ... done
+Creating vxlanlab-hv2-1 ...
+Creating vxlanlab-hv1-1 ...
+Creating vxlanlab-hv2-1
+Creating vxlanlab-hv1-1 ... done
 brsao0157#
 brsao0157# docker ps
 CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS              PORTS               NAMES
-b93490710a11        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   13 seconds ago      Up 9 seconds                            vxlanlab_hv1_1
-47b79f2ffeb1        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   14 seconds ago      Up 10 seconds                           vxlanlab_hv2_1
+b93490710a11        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   13 seconds ago      Up 9 seconds                            vxlanlab-hv1-1
+47b79f2ffeb1        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   14 seconds ago      Up 10 seconds                           vxlanlab-hv2-1
 brsao0157#
 brsao0157# ls
 docker-compose.yml  README.md  run_lab.sh  setup_hv1.sh  setup_hv2.sh  start_ovs.sh
-brsao0157# docker cp setup_hv1.sh vxlanlab_hv1_1:/
-brsao0157# docker cp setup_hv2.sh vxlanlab_hv2_1:/
+brsao0157# docker cp setup_hv1.sh vxlanlab-hv1-1:/
+brsao0157# docker cp setup_hv2.sh vxlanlab-hv2-1:/
 brsao0157#
-brsao0157# docker exec vxlanlab_hv1_1 /setup_hv1.sh
+brsao0157# docker exec vxlanlab-hv1-1 /setup_hv1.sh
 brsao0157#
-brsao0157# docker exec vxlanlab_hv2_1 /setup_hv2.sh
+brsao0157# docker exec vxlanlab-hv2-1 /setup_hv2.sh
 brsao0157#
-brsao0157# docker exec -d vxlanlab_hv1_1 /bin/bash -c "tcpdump -i vm1 -w vm1_overlay.pcap"
+brsao0157# docker exec -d vxlanlab-hv1-1 /bin/bash -c "tcpdump -i vm1 -w vm1_overlay.pcap"
 brsao0157#
-brsao0157# docker exec -d vxlanlab_hv2_1 /bin/bash -c "tcpdump -i vm2 -w vm2_overlay.pcap"
+brsao0157# docker exec -d vxlanlab-hv2-1 /bin/bash -c "tcpdump -i vm2 -w vm2_overlay.pcap"
 brsao0157#
-brsao0157# docker exec -d vxlanlab_hv1_1 /bin/bash -c "tcpdump -i eth0 -w vm1_underlay.pcap"
+brsao0157# docker exec -d vxlanlab-hv1-1 /bin/bash -c "tcpdump -i eth0 -w vm1_underlay.pcap"
 brsao0157#
-brsao0157# docker exec -d vxlanlab_hv2_1 /bin/bash -c "tcpdump -i eth0 -w vm2_underlay.pcap"
+brsao0157# docker exec -d vxlanlab-hv2-1 /bin/bash -c "tcpdump -i eth0 -w vm2_underlay.pcap"
 brsao0157#
 brsao0157#
-brsao0157# docker exec -d vxlanlab_hv1_1 /bin/bash -c "ping -I vm1 -c 1 192.168.1.2"
+brsao0157# docker exec -d vxlanlab-hv1-1 /bin/bash -c "ping -I vm1 -c 1 192.168.1.2"
 brsao0157#
-brsao0157# docker exec -d vxlanlab_hv1_1 /bin/bash -c "pkill tcpdump"
+brsao0157# docker exec -d vxlanlab-hv1-1 /bin/bash -c "pkill tcpdump"
 brsao0157#
-brsao0157# docker exec -d vxlanlab_hv2_1 /bin/bash -c "pkill tcpdump"
+brsao0157# docker exec -d vxlanlab-hv2-1 /bin/bash -c "pkill tcpdump"
 brsao0157#
 brsao0157# docker ps
 CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS              PORTS               NAMES
-b93490710a11        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   4 minutes ago       Up 4 minutes                            vxlanlab_hv1_1
-47b79f2ffeb1        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   4 minutes ago       Up 4 minutes                            vxlanlab_hv2_1
+b93490710a11        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   4 minutes ago       Up 4 minutes                            vxlanlab-hv1-1
+47b79f2ffeb1        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   4 minutes ago       Up 4 minutes                            vxlanlab-hv2-1
 brsao0157#
-brsao0157# docker cp vxlanlab_hv1_1:/vm1_overlay.pcap .
+brsao0157# docker cp vxlanlab-hv1-1:/vm1_overlay.pcap .
 brsao0157#
-brsao0157# docker cp vxlanlab_hv2_1:/vm2_overlay.pcap .
+brsao0157# docker cp vxlanlab-hv2-1:/vm2_overlay.pcap .
 brsao0157#
-brsao0157# docker cp vxlanlab_hv1_1:/vm1_underlay.pcap .
+brsao0157# docker cp vxlanlab-hv1-1:/vm1_underlay.pcap .
 brsao0157#
-brsao0157# docker cp vxlanlab_hv2_1:/vm2_underlay.pcap .
+brsao0157# docker cp vxlanlab-hv2-1:/vm2_underlay.pcap .
 brsao0157#
 brsao0157# ls
 docker-compose.yml  run_lab.sh    setup_hv2.sh  vm1_overlay.pcap   vm2_overlay.pcap
@@ -65,7 +65,7 @@ total 40
 brsao0157#
 brsao0157# docker ps
 CONTAINER ID        IMAGE                             COMMAND                  CREATED             STATUS              PORTS               NAMES
-b93490710a11        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   6 minutes ago       Up 6 minutes                            vxlanlab_hv1_1
-47b79f2ffeb1        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   6 minutes ago       Up 6 minutes                            vxlanlab_hv2_1
+b93490710a11        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   6 minutes ago       Up 6 minutes                            vxlanlab-hv1-1
+47b79f2ffeb1        hechaol/ovs-vtep-emulator:2.9.0   "/bin/bash -c '/star…"   6 minutes ago       Up 6 minutes                            vxlanlab-hv2-1
 brsao0157#
 brsao0157#
